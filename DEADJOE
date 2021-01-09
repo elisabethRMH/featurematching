@@ -1,0 +1,24 @@
+
+*** These modified files were found in JOE when it aborted on Fri Oct 23 14:41:06 2020
+*** JOE was aborted by UNIX signal 1
+
+*** File '(Unnamed)'
+/users/sista/ehereman/Documents/code/feature_mapping/fmandclassmodel_config.py
+
+*** File '* Startup Log *'
+Processing '/etc/joe/jmacsrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/jmacsrc
+
+*** These modified files were found in JOE when it aborted on Tue Nov 24 23:17:32 2020
+*** JOE was aborted by UNIX signal 1
+
+*** File '(Unnamed)'
+/users/sista/ehereman/Documents/code/feature_mapping/posttraining_map_lesspatients.py
+
+*** File '* Startup Log *'
+Processing '/etc/joe/jmacsrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/jmacsrc
