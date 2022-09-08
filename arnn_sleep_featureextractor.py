@@ -1,6 +1,7 @@
 import tensorflow as tf
 import sys
 sys.path.insert(1,'/users/sista/ehereman/GitHub/SeqSleepNet/tensorflow_net/E2E-ARNN')
+#sys.path.insert(1,'/users/sista/ehereman/GitHub/SeqSleepNet/tensorflow_net/SeqSleepNet')
 from nn_basic_layers import *
 from filterbank_shape import FilterbankShape
 '''
@@ -10,7 +11,7 @@ I adapted it into a function cause that's better than making a class where the i
 Also fixed mistake in filter bank for EMG. even though EMG is not being used here
 '''
 
-def arnn_featureextractor(config, input_x, dropout_keep_prob_rnn, frame_seq_len, reuse=False):
+def arnn_featureextractor(config, input_x, dropout_keep_prob_rnn, frame_seq_len, reuse=False, istraining=False):
 
 
     filtershape = FilterbankShape()
@@ -41,7 +42,7 @@ def arnn_featureextractor(config, input_x, dropout_keep_prob_rnn, frame_seq_len,
             # Temporarily crush the feature_mat's dimensions
             Xeog = tf.reshape(tf.squeeze(input_x[:,:,:,1]), [-1, config.ndim])
             # first filter bank layer
-            Weog = tf.get_variable('Weog', initializer=tf.random_normal([config.ndim, config.nfilter],dtype=tf.float32))
+            Weog = tf.get_variable('Variable', initializer=tf.random_normal([config.ndim, config.nfilter],dtype=tf.float32))
             # non-negative constraints
             Weog = tf.sigmoid(Weog)
             # mask matrix should be replaced by shape-specific filter bank, e.g. triangular,rectangle.
@@ -54,7 +55,7 @@ def arnn_featureextractor(config, input_x, dropout_keep_prob_rnn, frame_seq_len,
             # Temporarily crush the feature_mat's dimensions
             Xemg = tf.reshape(tf.squeeze(input_x[:,:,:,2]), [-1, config.ndim])
             # first filter bank layer
-            Wemg = tf.get_variable('Wemg', initializer=tf.random_normal([config.ndim, config.nfilter],dtype=tf.float32))
+            Wemg = tf.get_variable('Variable', initializer=tf.random_normal([config.ndim, config.nfilter],dtype=tf.float32))
             # non-negative constraints
             Wemg = tf.sigmoid(Wemg)
             # mask matrix should be replaced by shape-specific filter bank, e.g. triangular,rectangle.
@@ -71,6 +72,17 @@ def arnn_featureextractor(config, input_x, dropout_keep_prob_rnn, frame_seq_len,
 
     # bidirectional frame-level recurrent layer
     with tf.device('/gpu:0'), tf.variable_scope("frame_rnn_layer", reuse=reuse) as scope:
+#        fw_cell1, bw_cell1 =bidirectional_recurrent_layer_bn_new(config.nhidden1,
+#                                                                  config.nlayer1,
+#                                                                  seq_len=config.frame_seq_len,
+#                                                                  is_training=istraining,
+#                                                                  input_keep_prob=dropout_keep_prob_rnn,
+#                                                                  output_keep_prob=dropout_keep_prob_rnn) 
+#        rnn_out1, rnn_state1 = bidirectional_recurrent_layer_output_new(fw_cell1,
+#                                                                    bw_cell1,
+#                                                                    X,
+#                                                                    frame_seq_len,
+#                                                                    scope=scope)
         fw_cell1, bw_cell1 = bidirectional_recurrent_layer(config.nhidden1,
                                                               config.nlayer1,
                                                               input_keep_prob=dropout_keep_prob_rnn,
@@ -84,7 +96,7 @@ def arnn_featureextractor(config, input_x, dropout_keep_prob_rnn, frame_seq_len,
         # output shape (batchsize*epoch_step, frame_step, nhidden1*2)
 
     with tf.device('/gpu:0'), tf.variable_scope("frame_attention_layer", reuse=reuse):
-        features = attention(rnn_out1, config.attention_size1, name='attention')
+        features = attention(rnn_out1, config.attention_size1)
         print(features.get_shape())
         # attention_output1 of shape (batchsize, nhidden1*2)
         return features
