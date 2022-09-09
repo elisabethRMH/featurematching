@@ -1,14 +1,17 @@
+
+
 import tensorflow as tf
 import sys
-sys.path.insert(1,'/users/sista/ehereman/GitHub/SeqSleepNet/tensorflow_net/E2E-ARNN')
+# sys.path.insert(1,'/users/sista/ehereman/GitHub/SeqSleepNet/tensorflow_net/E2EARNN')
 #sys.path.insert(1,'/users/sista/ehereman/GitHub/SeqSleepNet/tensorflow_net/SeqSleepNet')
-from nn_basic_layers import *
-from filterbank_shape import FilterbankShape
+from nn_basic_layers_arnn import *
+from filterbank_shape_arnn import FilterbankShape
 '''
 Attentional recurrent neural network for sleep staging.
-This code is based on arnn_sleep_selfsup_v2.py from selfsup_banville. 
-I adapted it into a function cause that's better than making a class where the init is the only function called.
-Also fixed mistake in filter bank for EMG. even though EMG is not being used here
+This code is based on the ARNN https://github.com/pquochuy/SeqSleepNet  (MIT © Huy Phan)
+fixed mistake in filter bank for EMG.
+
+
 '''
 
 def arnn_featureextractor(config, input_x, dropout_keep_prob_rnn, frame_seq_len, reuse=False, istraining=False):

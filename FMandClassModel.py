@@ -9,8 +9,8 @@ Created on Tue May 26 16:40:01 2020
 """
 import sys
 import tensorflow as tf
-sys.path.insert(1,'/users/sista/ehereman/GitHub/SeqSleepNet/tensorflow_net/E2E-ARNN')
-from nn_basic_layers import fc
+# sys.path.insert(0,'/users/sista/ehereman/GitHub/SeqSleepNet/tensorflow_net/E2EARNN')
+from nn_basic_layers_arnn import fc
 from arnn_sleep_featureextractor import arnn_featureextractor #V2 is without the fc layer!
 import copy
 import tensorflow.keras.backend as K
@@ -44,11 +44,11 @@ class FMandClass_Model(object):
             self.features1 =tf.placeholder(tf.float32, [None, self.config.nhidden1*2])
             self.features2 =tf.placeholder(tf.float32, [None, self.config.nhidden1*2])
             
-        with tf.device('/gpu:0'), tf.variable_scope("labelpredictor_net"):
+        with tf.device('/gpu:0'), tf.variable_scope("output_layer"):
             self.score = fc(self.features1,
                             self.config.nhidden1 * 2,
                             self.config.nclass,
-                            name="outputsource",
+                            name="output",
                             relu=False)
             self.prediction = tf.argmax(self.score, 1, name="prediction")
             self.score_target = fc(self.features2,

@@ -203,7 +203,7 @@ for fold in range(12):
                 saver1.restore(sess, os.path.join(checkpoint_path1, "best_model_acc"))
                 var_list2= {}
                 for v2 in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='seqsleepnet_source'):
-                    tmp=v2.name[16:-2]
+                    tmp=v2.name[19:-2]
                     var_list2[tmp]=v2
                 saver2=tf.train.Saver(var_list=var_list2)
                 saver2.restore(sess, os.path.join(checkpoint_path1, "best_model_acc"))
@@ -211,7 +211,7 @@ for fold in range(12):
                 if not config.same_network:
                     var_list2= {}
                     for v2 in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='seqsleepnet_target'):
-                        tmp=v2.name[16:-2]
+                        tmp=v2.name[19:-2]
                         var_list2[tmp]=v2
                     saver2=tf.train.Saver(var_list=var_list2)
                     saver2.restore(sess, os.path.join(checkpoint_path1, "best_model_acc"))

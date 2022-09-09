@@ -15,8 +15,6 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0,-1" #force not using GPU!
 import numpy as np
 import tensorflow as tf
 import math
-#from tensorflow.python.client import device_lib
-#print(device_lib.list_local_devices())
 
 import shutil, sys
 from datetime import datetime
@@ -72,6 +70,7 @@ for fold in range(12):
         retrain_generator.y=retrain_generator.y[:,order]
 
         list1= [eeg_train_data]#, eeg_train_data]
+        list1= [eeg_test_data]#, eeg_train_data]
         train_generator= SubGenFromFileHuy(filelist_lst=list1,shuffle=True, batch_size=batch_size, sequence_size=1, normalize_per_subject=True,  replacepaths=replacepaths)
         train_generator.batch_size=int(np.floor(len(train_generator.datalist)/len(retrain_generator)))
         
@@ -98,7 +97,8 @@ for fold in range(12):
         tf.app.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
         tf.app.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on devices")
         
-        tf.app.flags.DEFINE_string("out_dir1", '/esat/asterie1/scratch/ehereman/results_adversarialDA/baseline_e2earnn_1ch_losssum_subjnorm_totalmass2/total'.format( fold), "Point to output directory")
+        # tf.app.flags.DEFINE_string("out_dir1", '/esat/asterie1/scratch/ehereman/results_adversarialDA/baseline_e2earnn_1ch_losssum_subjnorm_totalmass2/total'.format( fold), "Point to output directory")
+        tf.app.flags.DEFINE_string("out_dir1",  '/volume1/scratch/ehereman/results_adversarialDA/baseline_e2earnn_1ch_losssum_c34_subjnorm_totalmass2/total', "Point to output directory")
         tf.app.flags.DEFINE_string("out_dir", '/esat/asterie1/scratch/ehereman/results_featuremapping/ceegrid/fmandclasstraining_targettosource_diffnetwork_subjnorm_target{:d}pat/n{:d}/group{:d}'.format(number_patients, fold, pat_group), "Point to output directory")
         tf.app.flags.DEFINE_string("checkpoint_dir", "./checkpoint/", "Point to checkpoint directory")
         
@@ -193,14 +193,14 @@ for fold in range(12):
                 print("Writing to {}\n".format(out_dir))
         
                 saver = tf.train.Saver(tf.all_variables(), max_to_keep=1)
-                saver1 = tf.train.Saver(tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='labelpredictor_net/outputsource'),max_to_keep=1)
+                saver1 = tf.train.Saver(tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='output_layer/output/'),max_to_keep=1)
 
                 sess.run(tf.initialize_all_variables())
                 
                 saver1.restore(sess, os.path.join(checkpoint_path1, "best_model_acc"))
                 var_list1 = {}
-                for v1 in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope= 'labelpredictor_net/outputtarget'):
-                    tmp = v1.name.replace('outputtarget','outputsource')
+                for v1 in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope= 'output_layer/outputtarget'):
+                    tmp = v1.name.replace('outputtarget','output')
                     tmp=tmp[:-2]
                     var_list1[tmp]=v1
                 saver1=tf.train.Saver(var_list=var_list1, max_to_keep=1)
@@ -208,14 +208,14 @@ for fold in range(12):
                 saver1.restore(sess, os.path.join(checkpoint_path1, "best_model_acc"))
                 var_list2= {}
                 for v2 in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='arnn_source'):
-                    tmp=v2.name[9:-2]
+                    tmp=v2.name[12:-2]
                     var_list2[tmp]=v2
                 saver2=tf.train.Saver(var_list=var_list2)
                 saver2.restore(sess, os.path.join(checkpoint_path1, "best_model_acc"))
                 if not config.same_network:
                     var_list2= {}
                     for v2 in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='arnn_target'):
-                        tmp=v2.name[9:-2]
+                        tmp=v2.name[12:-2]
                         var_list2[tmp]=v2
                     saver2=tf.train.Saver(var_list=var_list2)
                     saver2.restore(sess, os.path.join(checkpoint_path1, "best_model_acc"))
