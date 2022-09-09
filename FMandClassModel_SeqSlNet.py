@@ -9,8 +9,8 @@ Created on Tue May 26 16:40:01 2020
 """
 import sys
 import tensorflow as tf
-sys.path.insert(1,'/users/sista/ehereman/GitHub/SeqSleepNet/tensorflow_net/SeqSleepNet')
-from nn_basic_layers import fc
+# sys.path.insert(1,'/users/sista/ehereman/GitHub/SeqSleepNet/tensorflow_net/SeqSleepNet')
+from nn_basic_layers_seqslnet import fc
 from seqsleepnet_sleep_featureextractor import seqsleepnet_featureextractor #V2 is without the fc layer!
 from seqsleepnet_sleep_featureextractor_diffattn import seqsleepnet_featureextractor_diffattn
 import copy

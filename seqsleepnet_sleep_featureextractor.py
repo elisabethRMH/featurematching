@@ -1,9 +1,9 @@
 import tensorflow as tf
 import sys
-sys.path.insert(1,'/users/sista/ehereman/GitHub/SeqSleepNet/tensorflow_net/SeqSleepNet')
+# sys.path.insert(1,'/users/sista/ehereman/GitHub/SeqSleepNet/tensorflow_net/SeqSleepNet')
 #sys.path.insert(1,'/users/sista/ehereman/GitHub/SeqSleepNet/tensorflow_net/SeqSleepNet')
-from nn_basic_layers import *
-from filterbank_shape import FilterbankShape
+from nn_basic_layers_seqslnet import *
+from filterbank_shape_arnn import FilterbankShape
 '''
 Attentional recurrent neural network for sleep staging.
 This code is based on the SeqSleepNet
